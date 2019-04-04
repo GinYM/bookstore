@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1000/xhtml">
+
+<head th:replace="common/header :: common-header">
+
+
+</head>
+
+<div th:replace="common/header :: navbar"></div>
+<div class="container" style="margin-top: 20px;">
+<div class="row">
+    <div class="col-sm-6">
+        <h5>Total number: </h5>
+    </div>
+    <div class="col-sm-6">
+        <span th:text="${total}"></span>
+    </div>
+
+    <div class="col-sm-6">
+        <h5>Number In stock: <span th:text="${stock}"></span></h5>
+    </div>
+    <div class="col-sm-6">
+        <span th:text="${stock}"></span>
+    </div>
+
+    <div class="col-sm-6">
+        <h5>Sold: <strong th:text="${sold}"></strong></h5>
+    </div>
+    <div class="col-sm-6">
+        <strong th:text="${sold}"></strong>
+    </div>
+
+</div>
+
+</div>
+
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
+</body>
+</html>

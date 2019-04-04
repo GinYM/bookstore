@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1000/xhtml">
+
+<head th:replace="common/header :: common-header">
+
+
+</head>
+
+<div th:replace="common/header :: navbar"></div>
+
+<body>
+
+<div class="container" style="margin-top: 20px;">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-md-9">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <span class="pull-right">(<strong><span th:text="${#lists.size(cartItemList)}"></span></strong>) items</span>
+                        <h5>Items in your cart</h5>
+                    </div>
+
+                    <div th:each="cartItem : ${cartItemList}">
+
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table class="table shoping-cart-table">
+                                <tbody>
+                                <tr>
+                                    <td width="90">
+                                        <img class="img-responsive shelf-book cart-product-imitation" th:src="#{adminPath}+@{/image/book/}+
+                                ${cartItem.book.id}+'.png'">
+
+                                    </td>
+                                    <td class="desc">
+                                        <h3>
+                                            <a th:href="@{/bookDetail?id=}+${cartItem.book.id}" class="text-navy">
+                                                <span th:text="${cartItem.book.title}"></span>
+                                            </a>
+                                        </h3>
+                                        <p th:utext="${#strings.abbreviate(cartItem.book.description,120)}" class="small desc-overflow">
+                                            <!--<span th:attr="class='desc-overflow'" th:utext="${cartItem.book.description}"></span>-->
+                                        </p>
+
+                                        <div class="m-t-sm">
+                                            <a th:href="@{/shoppingCart/removeItem?id=}+${cartItem.id}" class="text-muted"><i class="fa fa-trash"></i> Remove item</a>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <span th:text="${cartItem.book.ourPrice}"></span>
+                                        <s class="small text-muted"><span th:text="${cartItem.book.listPrice}"></span></s>
+                                    </td>
+                                    <form th:action="@{/shoppingCart/updateItem}">
+                                    <td width="85">
+                                        <input hidden="hidden" name="id" th:value="${cartItem.id}" />
+                                        <input type="text" th:name="qty" class="form-control cartItemQty" th:id="${cartItem.id}" th:value="${cartItem.qty}">
+                                        <button style="display:none;" th:id="'update-item-'+${cartItem.id}"
+                                                type="submit" class="btn btn-warning btn-sm">Update</button>
+                                    </td>
+                                    </form>
+                                    <td>
+                                        <h4>
+                                            <span th:text="${#numbers.formatDecimal(cartItem.subtotal,0,2) }"></span>
+                                        </h4>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    </div>
+                    <div class="ibox-content">
+
+                        <div class="row">
+                            <div class="col-sm-6 text-left">
+                                <!--<span><i class="fa fa-arrow-left"></i>  Continue shopping</span>-->
+                                <a style="color: black;" th:href="@{/bookshelf}"><i class="fa fa-arrow-left"></i> Continue Shopping</a>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <a class="btn btn-primary" th:href="@{/checkout(id=${shoppingCart.id}) }"><i class="fa fa fa-shopping-cart"></i> Check Out</a>
+                            </div>
+                        </div>
+
+                        <!--<button class="btn btn-primary pull-right"><i class="fa fa fa-shopping-cart"></i> Checkout</button>-->
+                        <!--<button class="btn btn-white" th:href="@{/bookshelf}"><i class="fa fa-arrow-left"></i>  Continue shopping</button>-->
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-3">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Cart Summary</h5>
+                    </div>
+                    <div class="ibox-content">
+                    <span>
+                        Total
+                    </span>
+                        <h2 class="font-bold">
+                            $<span th:text="${#numbers.formatDecimal(shoppingCart.grandTotal,0,2)}"></span>
+                        </h2>
+
+                        <hr>
+                        <span class="text-muted small">
+                        *For United States, France and Germany applicable sales tax will be applied
+                    </span>
+                        <div class="m-t-sm">
+                            <div class="btn-group">
+                                <a href="#" class="btn btn-primary btn-sm"><i class="fa fa-shopping-cart"></i> Checkout</a>
+                                <a href="#" class="btn btn-white btn-sm"> Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Support</h5>
+                    </div>
+                    <div class="ibox-content text-center">
+                        <h3><i class="fa fa-phone"></i> +1 123 456 7890</h3>
+                        <span class="small">
+                        Please contact with us if you have any questions. We are avalible 24h.
+                    </span>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1000/xhtml">
+
+<head th:replace="common/header :: common-header">
+
+
+</head>
+
+<div th:replace="common/header :: navbar"></div>
+
+<body class="form-v5">
+
+<div class="container">
+    <form th:action="@{/checkout}" method="post">
+        <div class="row" style="margin-top: 10px;">
+
+            <div class="col-sm-12" th:if="${orderFail}">
+                <div class="alert alert-danger">
+                    <h4><i class="fa fa-window-close" aria-hidden="true" style="color: limegreen;"></i>
+                        Sorry, too many people, please try again.</h4>
+                </div>
+            </div>
+
+            <div class="col-sm-12" th:if="${orderSuccess}">
+                <div class="alert alert-success">
+                    <h4><i class="fa fa-check" aria-hidden="true" style="color: limegreen;"></i>
+                    Thank you, your order has been placed.</h4>
+                    <h5>The estimated delivery date is <span th:text="${estimatedDeliveryDate}"></span></h5>
+                </div>
+
+                <h3>List of Items</h3>
+
+
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <h6>Products</h6>
+                            </div>
+                            <div class="col-sm-2">
+                                <h6>Price</h6>
+                            </div>
+                            <div class="col-sm-2">
+                                <h6>Qty</h6>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row" th:each="cartItem : ${cartItemList}">
+
+                            <hr>
+                            <div class="col-sm-2">
+                                <a th:href="@{/bookDetail(id=${cartItem.book.id})}">
+                                    <img class="img-fluid shelf-book" th:src="#{adminPath}+@{/image/book/}
+                                            +${cartItem.book.id}+'.png'" style="width: 70px;">
+                                </a>
+                            </div>
+                            <div class="col-sm-6">
+                                <div style="margin-left:0px;">
+                                    <a th:href="@{/bookDetail?id=}+${cartItem.book.id}"><h6 th:text="${cartItem.book.title}"></h6></a>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <h6 style="color: #db3208; font-size: large;">
+                                    $<span th:text="${cartItem.book.ourPrice}"
+                                           th:style="${cartItem.book.inStockNumber}==0? 'text-decoration: line-through' : ''"></span>
+                                </h6>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <h6 style="font-size: large;" th:text="${cartItem.qty}"></h6>
+                            </div>
+
+                        </div>
+                <hr />
+                <h4 class="col-xs-12 text-right">
+                    <strong style="font-size: large;">Order Total (<span
+                            th:text="${#lists.size(cartItemList)}"></span> items):
+                    </strong> <span style="color: #db3208; font-szie: large;">$<span
+                        th:text="${#numbers.formatDecimal(orderTotal,0,2)}"></span></span>
+                </h4>
+            </div>
+        </div>
+
+
+    </form>
+</div>
+
+
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
+</body>
+</html>

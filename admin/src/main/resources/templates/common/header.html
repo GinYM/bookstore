@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:fragment="common-header">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <title>YM's Bookstore</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!--data table-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+    <!--<link rel="stylesheet" type="text/css" href="/DataTables/datatables.css">-->
+    <!--<link th:href="@{/css/jquery.dataTables.min.css}" rel="stylesheet" >-->
+    <!--<link th:href="@{/css/dataTables.bootstrap.min.css}" rel="stylesheet" >-->
+
+    <script src="https://cdn.ckeditor.com/ckeditor5/12.0.0/classic/ckeditor.js"></script>
+
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
+    <link rel="icon" th:href="@{/image/apple-touch-icon.png}">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/roboto-font.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fonts/font-awesome-5/css/fontawesome-all.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+
+<body>
+
+<div th:fragment="navbar">
+
+    <!--static navbar-->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark ">
+        <a class="navbar-brand" th:href="@{/}">Admin Portal</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Books
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" th:href="@{/book/add}">Add a new book</a>
+                        <a class="dropdown-item" th:href="@{/book/bookList}">View book list</a>
+                    </div>
+                </li>
+
+            </ul>
+
+
+            <form class="form-inline mt-2 mt-md-0">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/logout}" sec:authorize="isAuthenticated()">Sign out</a>
+                    </li>
+                </ul>
+
+            </form>
+        </div>
+    </nav>
+
+</div>
+
+<div th:fragment="profile-sidebar">
+    <div class="col-md-3 float-left col-1 pl-0 pr-0 collapse width show" id="sidebar">
+        <div class="list-group border-0 card text-center text-md-left">
+            <a th:href="@{/profile}" class="list-group-item d-inline-block collapsed"><i class="fas fa-home"></i> <span class="d-none d-md-inline">Home</span> </a>
+            <a th:href="@{/profileEdit}" class="list-group-item d-inline-block collapsed"><i class="fas fa-edit"></i> <span class="d-none d-md-inline">Edit</span></a>
+            <a href="#" class="list-group-item d-inline-block collapsed" ><i class="fab fa-wpforms"></i> <span class="d-none d-md-inline">Orders</span></a>
+            <a href="#" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class="fas fa-money-bill"></i> <span class="d-none d-md-inline">Billing</span></a>
+            <a href="#" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class="fas fa-truck"></i> <span class="d-none d-md-inline">Shipping</span></a>
+            <a href="#" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i  class="far fa-clock"></i> <span class="d-none d-md-inline">Link</span></a>
+            <a href="#" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class="fa fa-th"></i> <span class="d-none d-md-inline">Link</span></a>
+            <a href="#" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class="fas fa-cogs"></i> <span class="d-none d-md-inline">Link</span></a>
+            <a href="#" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class="fa fa-calendar"></i> <span class="d-none d-md-inline">Link</span></a>
+            <a href="#" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class="fa fa-envelope"></i> <span class="d-none d-md-inline">Link</span></a>
+            <a href="#" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class="far fa-chart-bar"></i> <span class="d-none d-md-inline">Link</span></a>
+            <a href="#" class="list-group-item d-inline-block collapsed" data-parent="#sidebar"><i class="fa fa-star"></i> <span class="d-none d-md-inline">Link</span></a>
+        </div>
+    </div>
+</div>
+
+
+
+<div th:fragment="body-bottom-scripts">
+    <!-- Bootstrap core JavaScript
+================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+            integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+            crossorigin="anonymous"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/bootbox.min.js}"></script>
+
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/scripts.js}"></script>
+
+    <!--data table-->
+    <!--<script th:src="@{/js/jquery.dataTables.min.js}"></script>-->
+    <!--<script th:src="@{/js/dataTables.bootstrap.min.js}"></script>-->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+
+</div>
+
+</body>
+</html>

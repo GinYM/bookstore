@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1000/xhtml">
+
+<head th:replace="common/header :: common-header">
+
+
+</head>
+
+
+
+<body class="form-v5">
+
+<!--<div class="page-top" style="width:100%; height: 20px; background-color: #f46b42;"></div>-->
+
+
+
+<div class="page-content">
+    <div class="form-v5-content">
+        <div th:if="${param.error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            Incorrect password or username
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <form class="form-detail" th:action="@{/login}" method="post">
+            <h2>Admin Portal Signin</h2>
+            <div class="form-row">
+                <label for="newUsername">Username</label>
+                <input type="text" name="username" id="newUsername" class="input-text" placeholder="Your Name" required>
+
+            </div>
+
+            <div class="form-row">
+                <label for="password">Password</label>
+                <span class="btn-show-pass">
+                    <i class="fa fa-eye"></i>
+                </span>
+                <input type="password" name="password" id="password" class="input-text" placeholder="Your Password" required>
+
+            </div>
+
+
+
+
+
+
+
+            <div class="form-row-last">
+                <input type="submit" name="login" class="login" value="Sign In">
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1000/xhtml">
+
+<head th:replace="common/header :: common-header">
+
+
+</head>
+
+<body>
+
+<!--<div class="page-top" style="width:100%; height: 20px; background-color: #f46b42;"></div>-->
+
+<div th:replace="common/header :: navbar"></div>
+
+<div class="container-fluid">
+    <div class="row d-flex d-md-block flex-nowrap wrapper">
+        <div th:replace="common/header :: profile-sidebar"></div>
+
+        <main class="col-md-9 float-left col px-5 pl-md-2 pt-2 main">
+            <a href="#" data-target="#sidebar" data-toggle="collapse" style="color:#212529;" ><i class="fas fa-bars fa-2x py-2 p-1"></i></a>
+
+
+            <div class="page-content" style="background-color: white">
+                <div class="form-v5-content" style="margin-left: 20px; margin-right: 20px; margin-top: -1px; margin-bottom: 20px;">
+
+                    <table class="table table-sm">
+                        <thead>
+                        <tr>
+                            <th>Order Date</th>
+                            <th>Order Number</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="order : ${orderList}">
+                            <td><a th:href="@{/orderDetail(id=${order.id})}">
+                                <span th:text="${#dates.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></span>
+                            </a></td>
+                            <td data-th-text="${order.id}"></td>
+                            <td th:with="tax=(${order.orderTotal}*1.06)"
+                                data-th-text="${#numbers.formatDecimal(tax,0,2)}"></td>
+                            <td data-th-text="${order.orderStatus}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <div th:if="${displayOrderDetail}">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="text-center">
+                                    <h2>Order Detail for Purchase #
+                                        <span th:text="${order.id}"></span></h2>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <strong>Billing Details</strong>
+                                            </div>
+                                            <div class="card-body">
+                                                <span th:text="${order.billingAddress.billingAddressName}"></span>
+                                                <span th:text="${order.billingAddress.billingAddressStreet1} + ' ' + ${order.billingAddress.billingAddressStreet2}"></span>
+                                                <span th:text="${order.billingAddress.billingAddressCity}"></span>
+                                                <span th:text="${order.billingAddress.billingAddressState}"></span>
+                                                <span th:text="${order.billingAddress.billingAddressZipcode}"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <strong>Payment Info</strong>
+                                            </div>
+                                            <div class="card-body">
+                                                <span th:text="${order.payment.holderName}">Card Name</span>
+                                                <span th:text="${order.payment.cardNumber}"></span>
+                                                <span th:text="${order.billingAddress.billingAddressCity}">Card Number</span>
+                                                <span>Exp Date:</span><span th:text="${order.payment.expiryMonth}"></span>
+                                                /<span th:text="${order.payment.expiryYear}"></span><br>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <strong>Billing Details</strong>
+                                            </div>
+                                            <div class="card-body">
+                                                <span th:text="${order.shippingAddress.shippingAddressName}"></span>
+                                                <span th:text="${order.shippingAddress.shippingAddressStreet1} + ' ' + ${order.shippingAddress.shippingAddressStreet2}"></span>
+                                                <span th:text="${order.shippingAddress.shippingAddressCity}"></span>
+                                                <span th:text="${order.shippingAddress.shippingAddressState}"></span>
+                                                <span th:text="${order.shippingAddress.shippingAddressZipcode}"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="text-center">
+                                            <strong>Order Summary</strong>
+                                        </h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                <tr>
+                                                    <td>
+                                                        <strong>Item Name</strong>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <strong>Item Price</strong>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <strong>Item Quantity</strong>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <strong>Total</strong>
+                                                    </td>
+                                                </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                <tr th:each="cartItem : ${cartItemList}">
+                                                    <td data-th-text="${cartItem.book.title}"></td>
+                                                    <td class="text-center" data-th-text="${cartItem.book.ourPrice}"></td>
+                                                    <td class="text-center" data-th-text="${cartItem.qty}"></td>
+                                                    <td class="text-center" data-th-text="${cartItem.subtotal}"></td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="emptyrow"></td>
+                                                    <td class="emptyrow"></td>
+                                                    <td class="emptyrow text-center"><strong>Tax</strong></td>
+                                                    <td class="emptyrow text-right" th:with="tax=(${order.orderTotal}*0.06)"
+                                                        data-th-text="${#numbers.formatDecimal(tax,0,2)}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="highrow"></td>
+                                                    <td class="highrow"></td>
+                                                    <td class="highrow text-center">
+                                                        <strong>Subtotal</strong>
+                                                    </td>
+                                                    <td class="highrow text-right" data-th-text="${order.orderTotal}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="emptyrow"><i class="fa fa-barcode iconbig"></i> </td>
+                                                    <td class="emptyrow"></td>
+                                                    <td class="emptyrow text-center"><strong>Total</strong></td>
+                                                    <td class="emptyrow text-right" th:with="total=${order.orderTotal*1.06}"
+                                                        data-th-text="${#numbers.formatDecimal(total, 0, 2)}"></td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+
+        </main>
+    </div>
+</div>
+
+
+
+<div th:replace="common/header :: body-bottom-scripts"></div>
+</body>
+</html>

@@ -30,6 +30,13 @@ public class BookScraperImpl implements BookScraper {
             }
 
             Element originalPrice = doc.select("div.price-original").first();
+
+            if(originalPrice == null){
+                bookDTO.setListPrice(-1);
+            }else{
+                bookDTO.setListPrice(TransformUtil.extractDouble(originalPrice.text()) );
+            }
+
             Element offerPrice = doc.select("div.price-sale").first();
 
             if(offerPrice == null){
@@ -41,7 +48,7 @@ public class BookScraperImpl implements BookScraper {
             bookDTO.setCategory("Engineering");
 
             bookDTO.setOurPrice(TransformUtil.extractDouble(offerPrice.text()));
-            bookDTO.setListPrice(TransformUtil.extractDouble(originalPrice.text()));
+
 
             //System.out.println("size: " +doc.select("li:contains(Author:)").size());
 
@@ -52,16 +59,28 @@ public class BookScraperImpl implements BookScraper {
             bookDTO.setPublisher(TransformUtil.removeStr("Publisher:", publisher.text()));
 
             Element isbn = doc.selectFirst("li:contains(ISBN-10:)");
-            bookDTO.setIsbn(Integer.parseInt(TransformUtil.removeStr("ISBN-10:", isbn.text())));
+            bookDTO.setIsbn(TransformUtil.removeStr("ISBN-10:", isbn.text()));
 
             Element bookFormat = doc.selectFirst("li:contains(Format:)");
             bookDTO.setFormat(TransformUtil.removeStr("Format:", bookFormat.text()).toLowerCase());
 
             Element weight = doc.selectFirst("li:contains(Weight:)");
-            bookDTO.setShippingWeight(Double.parseDouble(TransformUtil.removeStr("Weight:", weight.text())));
+            if(weight==null){
+                bookDTO.setShippingWeight(-1);
+            }else{
+                bookDTO.setShippingWeight(Double.parseDouble(TransformUtil.removeStr("Weight:", weight.text())));
+            }
 
             Element title = doc.selectFirst("li:contains(Subject:)");
-            bookDTO.setTitle(TransformUtil.removeStr("Subject:", title.text()));
+            if(title!=null){
+                bookDTO.setTitle(TransformUtil.removeStr("Subject:", title.text()));
+            }else{
+                title = doc.selectFirst("h1.product-detail__name");
+                if(title!=null){
+                    bookDTO.setTitle(title.text());
+                }
+            }
+
 
             Element desc = doc.selectFirst("[name='abstract']");
             bookDTO.setDescription(desc.attr("content"));

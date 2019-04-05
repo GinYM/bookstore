@@ -1,13 +1,9 @@
-package com.bookstore.scraper.DTO;
+package com.bookstore.DTO;
 
 import lombok.Data;
 
-import java.io.Serializable;
-
 @Data
-public class BookDTO  {
-    //private long id = 123L;
-
+public class BookDTO {
     private String title;
     private String author;
     private String publisher;

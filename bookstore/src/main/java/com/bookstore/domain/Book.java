@@ -26,7 +26,7 @@ public class Book implements Serializable {
     private String category;
     private int numberOfPages;
     private String format;
-    private int isbn;
+    private String isbn;
     private double shippingWeight;
     private double listPrice;
     private double ourPrice;

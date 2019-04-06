@@ -5,8 +5,8 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class BookDTO {
-    //private long id = 123L;
+public class BookDTO implements Serializable {
+    private long id = 123L;
     private String title;
     private String author;
     private String publisher;
@@ -22,5 +22,7 @@ public class BookDTO {
     private boolean active = true;
     private String description;
     private int inStockNumber;
+
+    private String url;
 
 }

@@ -22,6 +22,7 @@ public class BookScraperImpl implements BookScraper {
     @Override
     public BookDTO scrapOne(String url) {
         BookDTO bookDTO = new BookDTO();
+        bookDTO.setUrl(url);
         try{
             Document doc = Jsoup.connect(url).get();
 

@@ -3,6 +3,8 @@ package com.bookstore.controller;
 import com.bookstore.DTO.BookDTO;
 import com.bookstore.domain.Book;
 import com.bookstore.service.BookService;
+import com.bookstore.service.impl.QueueConsumer;
+import com.bookstore.service.impl.QueueProduceId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +34,12 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    private QueueConsumer queueConsumer;
+
+    @Autowired
+    private QueueProduceId queueProduceId;
+
     @RequestMapping(value = "/importFromUrl")
     public String importFromUrl(Model model){
         return "importFromUrl";
@@ -42,15 +50,16 @@ public class BookController {
             @RequestParam("url") String url,
             Model model
     ){
-
+        BookDTO bookDTO = queueConsumer.getBookDTO();
         model.addAttribute("url", url);
-        BookDTO bookDTO = restTemplate.getForObject(urlPre+url, BookDTO.class);
-        model.addAttribute("bookDTO", bookDTO);
-        model.addAttribute("getSuccess", true);
-
-        Book book = new Book();
-        BeanUtils.copyProperties(bookDTO, book);
-        bookService.save(book);
+        if(queueConsumer.getBookDTO() == null || !bookDTO.getUrl().equals(url)){
+            model.addAttribute("getSuccess", false);
+            queueProduceId.produce(url);
+            //restTemplate.getForObject(urlPre+url, BookDTO.class);
+        }else{
+            model.addAttribute("bookDTO", bookDTO);
+            model.addAttribute("getSuccess", true);
+        }
 
         return "importFromUrl";
     }

@@ -2,8 +2,13 @@ package com.bookstore.DTO;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class BookDTO {
+public class BookDTO implements Serializable {
+
+    private long id = 123L;
+
     private String title;
     private String author;
     private String publisher;
@@ -19,5 +24,7 @@ public class BookDTO {
     private boolean active = true;
     private String description;
     private int inStockNumber;
+
+    private String url;
 
 }

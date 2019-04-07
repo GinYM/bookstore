@@ -38,8 +38,7 @@ public class TransformUtil {
     }
 
     public static String extractDate(String data) throws ScrapException{
-        data = "1 "+data;
-        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy");
         Date date;
         try{
             date = formatter.parse(data);

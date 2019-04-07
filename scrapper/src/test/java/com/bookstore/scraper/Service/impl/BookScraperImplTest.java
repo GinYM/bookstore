@@ -25,6 +25,8 @@ public class BookScraperImplTest {
 
   private static String url = "https://www.strandbooks.com/staff-picks/witches-sluts-feminists-conjuring-the-sex-positive";
 
+  private static String urlAmz = "https://www.amazon.com/Turkeys-Eggcellent-Easter-Turkey-Trouble/dp/154204037X/ref=gbph_img_m-2_82c1_6d7804a7?smid=ATVPDKIKX0DER&pf_rd_p=8e8f1c7a-4944-4873-af6d-7e0003fe82c1&pf_rd_s=merchandised-search-2&pf_rd_t=101&pf_rd_i=45&pf_rd_m=ATVPDKIKX0DER&pf_rd_r=YEEC2ZKFF6YE50SRH66V";
+
   @Test
   public void scrapOne() {
     //String url = "https://www.amazon.com/gp/product/0143132504/ref=s9_acsd_simh_bw_c_x_2_w?pf_rd_m=ATVPDKIKX0DER&pf_rd_s=merchandised-search-10&pf_rd_r=5Y4H05X3EY8T9HV5VFGR&pf_rd_t=101&pf_rd_p=a48686f2-3e3e-43da-91b7-756c8330420e&pf_rd_i=283155";
@@ -41,6 +43,24 @@ public class BookScraperImplTest {
     Assert.assertEquals(bookDTO.getTitle(), "Feminism & Feminist Theory");
     Assert.assertEquals(bookDTO.getInStockNumber(), 10);
     Assert.assertEquals(bookDTO.getPublicationDate(), "2017-06-01");
+  }
+
+  @Test
+  public void scrapOneAmz() {
+    //String url = "https://www.amazon.com/gp/product/0143132504/ref=s9_acsd_simh_bw_c_x_2_w?pf_rd_m=ATVPDKIKX0DER&pf_rd_s=merchandised-search-10&pf_rd_r=5Y4H05X3EY8T9HV5VFGR&pf_rd_t=101&pf_rd_p=a48686f2-3e3e-43da-91b7-756c8330420e&pf_rd_i=283155";
+    BookDTO bookDTO = bookScraper.scrapOne(urlAmz);
+    System.out.println(bookDTO);
+
+//    Assert.assertEquals(Double.valueOf(bookDTO.getOurPrice()),Double.valueOf(15.25) );
+//    Assert.assertEquals(Double.valueOf(bookDTO.getListPrice()), Double.valueOf(16.95) );
+//    Assert.assertEquals(bookDTO.getAuthor(), "Kristen J. Sollee");
+//    Assert.assertEquals(bookDTO.getPublisher(),"ThreeL Media");
+//    Assert.assertEquals(bookDTO.getIsbn(), 996485279);
+//    Assert.assertEquals(bookDTO.getFormat(), "paperback");
+//    Assert.assertEquals(Double.valueOf(bookDTO.getShippingWeight()), Double.valueOf(0.45) );
+//    Assert.assertEquals(bookDTO.getTitle(), "Feminism & Feminist Theory");
+//    Assert.assertEquals(bookDTO.getInStockNumber(), 10);
+//    Assert.assertEquals(bookDTO.getPublicationDate(), "2017-06-01");
   }
 
   @Test

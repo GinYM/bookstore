@@ -15,7 +15,7 @@
     <div class="row" style="margin-top:80px;">
         <div class="col-sm-3">
             <a th:href="@{/bookshelf}">Back to book list</a><br>
-            <img class="img-fluid shelf-book" th:src="#{adminPath}+@{/image/book/}+${book.id}+'.png'">
+            <img class="img-fluid shelf-book" th:src="${book.imgUrl}">
         </div>
         <div class="col-sm-9">
             <h3 th:text="${book.title}">Book Title</h3>

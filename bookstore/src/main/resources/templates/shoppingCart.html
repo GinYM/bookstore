@@ -28,8 +28,7 @@
                                 <tbody>
                                 <tr>
                                     <td width="90">
-                                        <img class="img-responsive shelf-book cart-product-imitation" th:src="#{adminPath}+@{/image/book/}+
-                                ${cartItem.book.id}+'.png'">
+                                        <img class="img-responsive shelf-book cart-product-imitation" th:src="${cartItem.book.imgUrl}">
 
                                     </td>
                                     <td class="desc">

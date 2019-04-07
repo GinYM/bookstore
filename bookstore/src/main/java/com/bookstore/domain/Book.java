@@ -36,6 +36,8 @@ public class Book implements Serializable {
     private String description;
     private int inStockNumber;
 
+    private String imgUrl;
+
     @Transient
     private MultipartFile bookImage;
 

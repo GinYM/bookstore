@@ -2,11 +2,13 @@ package com.bookstore.controller;
 
 import com.bookstore.DTO.BookDTO;
 import com.bookstore.domain.Book;
+import com.bookstore.service.AmazonS3ClientService;
 import com.bookstore.service.BookService;
+import com.bookstore.service.impl.AmazonS3ClientServiceImpl;
 import com.bookstore.service.impl.QueueConsumer;
 import com.bookstore.service.impl.QueueProduceId;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +16,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.Path;
 import java.util.List;
 
 @Controller
@@ -27,6 +23,12 @@ import java.util.List;
 public class BookController {
 
     private static final String urlPre = "http://scraper/scrap/?url=";
+
+    @Value("${aws.imgExt}")
+    private String imgExt;
+
+    @Autowired
+    private AmazonS3ClientService amazonS3ClientService;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -76,19 +78,23 @@ public class BookController {
             @ModelAttribute("book") Book book, HttpServletRequest request
     ) {
         // todo use more advanced method, such as aws to store the image
-        bookService.save(book);
+        String name = book.getId() + imgExt;
+
         MultipartFile bookImage = book.getBookImage();
 
         try {
-            byte[] bytes = bookImage.getBytes();
-            String name = book.getId() + ".png";
-            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File("src/main/resources/static/image/book/" + name)));
-            stream.write(bytes);
-            stream.close();
+            amazonS3ClientService.uploadFileToS3Bucket(bookImage, true, name);
+
+//            byte[] bytes = bookImage.getBytes();
+//
+//            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File("src/main/resources/static/image/book/" + name)));
+//            stream.write(bytes);
+//            stream.close();
         } catch (Exception e) {
             System.out.println("Error!");
             e.printStackTrace();
         }
+        bookService.save(book);
 
         return "redirect:bookList";
     }
@@ -120,15 +126,18 @@ public class BookController {
         MultipartFile bookImage = book.getBookImage();
         if (!bookImage.isEmpty()) {
             try {
-                byte[] bytes = bookImage.getBytes();
-                String name = book.getId() + ".png";
-                Path p = Paths.get("src/main/resources/static/image/book/" + name);
-                if(Files.isRegularFile(p)){
-                    Files.delete(p);
-                }
-                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File("src/main/resources/static/image/book/" + name)));
-                stream.write(bytes);
-                stream.close();
+
+                amazonS3ClientService.uploadFileToS3Bucket(bookImage, true, book.getId()+imgExt);
+
+//                byte[] bytes = bookImage.getBytes();
+//                String name = book.getId() + ".png";
+//                Path p = Paths.get("src/main/resources/static/image/book/" + name);
+//                if(Files.isRegularFile(p)){
+//                    Files.delete(p);
+//                }
+//                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File("src/main/resources/static/image/book/" + name)));
+//                stream.write(bytes);
+//                stream.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -2,10 +2,15 @@ package com.bookstore.scraper.Util;
 
 import com.bookstore.scraper.Enum.ResultEnum;
 import com.bookstore.scraper.Exception.ScrapException;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,5 +54,21 @@ public class TransformUtil {
 
         formatter = new SimpleDateFormat("yyyy-MM-dd");
         return formatter.format(date);
+    }
+
+    public static String extractUrl(String rawUrl){
+
+        JsonObject obj = new JsonParser().parse(rawUrl).getAsJsonObject();
+        String url ="";
+        int maxResolution = 0;
+        for(Map.Entry<String, JsonElement> entry : obj.entrySet()){
+            JsonArray arr = entry.getValue().getAsJsonArray();
+            int resolution = arr.get(0).getAsInt() + arr.get(1).getAsInt();
+            if(resolution > maxResolution){
+                maxResolution = resolution;
+                url = entry.getKey();
+            }
+        }
+        return url;
     }
 }

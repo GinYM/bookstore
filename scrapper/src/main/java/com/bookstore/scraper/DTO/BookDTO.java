@@ -25,5 +25,10 @@ public class BookDTO implements Serializable {
     private int inStockNumber;
 
     private String url;
+    private String imgUrl;
+
+    // for scrap all flag
+    private String rawUrl;
+    //private String imgAmzUrl;
 
 }

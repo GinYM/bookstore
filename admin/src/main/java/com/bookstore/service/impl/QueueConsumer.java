@@ -11,22 +11,35 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @Slf4j
 @Getter
 public class QueueConsumer {
 
     private BookDTO bookDTO;
+    private List<BookDTO> bookDTOList;
     @Autowired
     private BookService bookService;
+
 
     @RabbitListener(queues = "${queue.name}", containerFactory = "jsaFactory")
     public void receiveMessage(BookDTO bookDTO) {
         this.bookDTO = bookDTO;
         //System.out.println("Received!");
-        Book book = new Book();
-        BeanUtils.copyProperties(bookDTO, book);
-        bookService.save(book);
         log.info("receive book: {}", bookDTO);
+        bookService.saveBookDTO(bookDTO);
+    }
+
+    @RabbitListener(queues = "${queue.name.all}", containerFactory = "jsaFactory")
+    public void receiveMessageAll(List<BookDTO> bookDTOList) {
+        this.bookDTOList = bookDTOList;
+        //System.out.println("Received!");
+        log.info("receive book number: {}", bookDTOList.size());
+
+        for (BookDTO bookDTO : bookDTOList) {
+            bookService.saveBookDTO(bookDTO);
+        }
     }
 }

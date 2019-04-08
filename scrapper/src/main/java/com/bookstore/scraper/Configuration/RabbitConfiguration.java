@@ -21,6 +21,11 @@ public class RabbitConfiguration {
     @Value("${queue.name.sendId}")
     private String queueName;
 
+    @Value("${exchange.name.sendId.all}")
+    private String fanoutExchangeAll;
+    @Value("${queue.name.sendId.all}")
+    private String queueNameAll;
+
     @Bean
     public MessageConverter jsonMessageConverter()
     {
@@ -35,9 +40,25 @@ public class RabbitConfiguration {
     FanoutExchange exchange() {
         return new FanoutExchange(fanoutExchange);
     }
+
+
+    @Bean
+    Queue queueAll() {
+        return new Queue(queueNameAll, true);
+    }
+    @Bean
+    FanoutExchange exchangeAll() {
+        return new FanoutExchange(fanoutExchangeAll);
+    }
+
     @Bean
     Binding binding(Queue queue, FanoutExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange);
+    }
+
+    @Bean
+    Binding binding1() {
+        return BindingBuilder.bind(queueAll()).to(exchangeAll());
     }
 
     @Bean

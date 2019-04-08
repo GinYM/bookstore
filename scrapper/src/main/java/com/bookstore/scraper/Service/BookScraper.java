@@ -10,4 +10,5 @@ public interface BookScraper {
     BookDTO scrapOne(String url);
 
     List<BookDTO> scrapList(List<String> urls);
+    List<BookDTO> scrapAll(String url);
 }

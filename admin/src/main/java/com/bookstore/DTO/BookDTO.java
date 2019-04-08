@@ -27,4 +27,8 @@ public class BookDTO implements Serializable {
 
     private String url;
 
+    private String imgUrl;
+
+    private String rawUrl;
+
 }

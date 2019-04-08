@@ -92,11 +92,13 @@ public class BookScraperImplTest {
 
   private String allUrl1 = "https://www.amazon.com/gp/new-releases/books/283155/ref=s9_acsd_ri_bw_clnk/ref=s9_acsd_ri_bw_c_x_ccl_w?pf_rd_m=ATVPDKIKX0DER&pf_rd_s=merchandised-search-11&pf_rd_r=26GMK0YG5W2TGKSE0HQC&pf_rd_t=101&pf_rd_p=c1698c9d-3c53-45d2-b536-8b2e50b21827&pf_rd_i=283155";
 
+  private String allUrl2 = "https://www.amazon.com/b/ref=s9_acss_bw_cg_BHPJAN_1a1_w?node=6960520011&pf_rd_m=ATVPDKIKX0DER&pf_rd_s=merchandised-search-2&pf_rd_r=GA0AR7H02TF3NQCH7H8Q&pf_rd_t=101&pf_rd_p=b7160c47-1f75-45c8-bcb5-7749ef79d02e&pf_rd_i=283155";
   @Test
   public void scrapAll(){
-    List<BookDTO> bookDTOS = bookScraper.scrapAll(allUrl1);
+    List<BookDTO> bookDTOS = bookScraper.scrapAll(allUrl2);
     for(BookDTO bookDTO : bookDTOS){
       System.out.println(bookDTO);
     }
   }
+
 }

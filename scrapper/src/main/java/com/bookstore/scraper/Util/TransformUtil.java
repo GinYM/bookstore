@@ -71,4 +71,15 @@ public class TransformUtil {
         }
         return url;
     }
+
+    public static String extractDateFromPublisher(String publisher) throws ScrapException{
+        String regex = "\\(.*\\)";
+        Matcher matcher = Pattern.compile( regex ).matcher(publisher);
+        if(matcher.find()){
+            String result = matcher.group();
+            return extractDate(result.substring(1, result.length()-1));
+        }else{
+            throw new ScrapException(ResultEnum.Invalid_Double);
+        }
+    }
 }

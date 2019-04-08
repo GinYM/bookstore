@@ -13,7 +13,8 @@
 
     <form th:action="@{/book/importAllFromUrl}" method="post">
         <div th:if="${getSuccess == true}" class="alert alert-success" role="alert">
-            We have get <span th:text="${url}"></span>
+            We have get <span th:text="${url}"></span>, <br> total number:
+            <span th:text="${#lists.size(bookDTOList)}"></span>
         </div>
         <div th:if="${getSuccess == false}" class="alert alert-danger" role="alert">
             Oops, scrapper doesn't finish yet, url is <span th:text="${url}"></span>
@@ -40,6 +41,7 @@
             <li class="list-group-item"><strong>List Price:</strong> <span th:text="${bookDTO.listPrice}"></span></li>
             <li class="list-group-item"><strong>Our Price:</strong> <span th:text="${bookDTO.ourPrice}"></span></li>
             <li class="list-group-item"><strong>Description:</strong> <span th:utext="${bookDTO.description}"></span></li>
+            <li class="list-group-item"><img th:src="${bookDTO.imgUrl}" class="rounded" alt="..."></li>
         </ul>
     </div>
 

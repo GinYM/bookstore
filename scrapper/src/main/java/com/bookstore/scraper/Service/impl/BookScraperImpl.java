@@ -22,10 +22,16 @@ import java.util.List;
 @Service
 @Slf4j
 public class BookScraperImpl implements BookScraper {
+
+    private static int scrapNum = 10;
+
+    private static int defaultInStock = 100;
+
     @Override
     public BookDTO scrapOne(String url) {
         BookDTO bookDTO = new BookDTO();
         bookDTO.setUrl(url);
+        log.info("[info]: processing url {}", url);
         try{
             Document doc = Jsoup.connect(url)
                     .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
@@ -38,6 +44,25 @@ public class BookScraperImpl implements BookScraper {
 
             //System.out.println(doc.body());
 
+            Elements checkHardcover = doc.select("ul.a-unordered-list > li.swatchElement > span > span > span.a-button-inner > a");
+            if(checkHardcover!=null){
+                for(int i = 0;i<checkHardcover.size();i++){
+                    Element getHardcover = checkHardcover.get(i);
+                    //System.out.println(getHardcover.text());
+                    if(getHardcover.text().indexOf("Hardcover")!=-1){
+
+                        String hcvUrl = "https://www.amazon.com"+getHardcover.attr("href");
+                        //System.out.println("new url: "+hcvUrl);
+                        doc = Jsoup.connect(hcvUrl)
+                                .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                                .referrer("http://www.google.com")
+                                .get();
+                        bookDTO.setUrl(hcvUrl);
+                        break;
+                    }
+                }
+            }
+
             Element originalPrice = doc.select("span.a-text-strike").first();
 
             if(originalPrice == null){
@@ -49,10 +74,19 @@ public class BookScraperImpl implements BookScraper {
             Element offerPrice = doc.select("span.offer-price").first();
 
             if(offerPrice == null){
-                throw new ScrapException(ResultEnum.Empty);
+                offerPrice = doc.selectFirst("span:contains(Special Price:)");
+                if(offerPrice != null){
+                    bookDTO.setOurPrice(TransformUtil.extractDouble(
+                            TransformUtil.removeStr("Special Price:", offerPrice.text())));
+                }else{
+                    throw new ScrapException(ResultEnum.Empty);
+                }
+
+            }else{
+                bookDTO.setOurPrice(TransformUtil.extractDouble(offerPrice.text()));
             }
 
-            bookDTO.setOurPrice(TransformUtil.extractDouble(offerPrice.text()));
+
 
             // set category
             bookDTO.setCategory("Engineering");
@@ -81,8 +115,9 @@ public class BookScraperImpl implements BookScraper {
             String extractDate = publishDate.text().substring(2);
             bookDTO.setPublicationDate(TransformUtil.extractDate(extractDate));
 
-            Element pages = doc.selectFirst("li:contains(Hardcover:)");
-            bookDTO.setNumberOfPages(Integer.parseInt(TransformUtil.removeStr("Hardcover:", pages.text()).split(" ")[0]));
+            //System.out.println(bookFormat.text());
+            Element pages = doc.selectFirst("li:contains("+bookFormat.text()+":)");
+            bookDTO.setNumberOfPages(Integer.parseInt(TransformUtil.removeStr(bookFormat.text()+":", pages.text()).split(" ")[0]));
 
             Element weight = doc.selectFirst("li:contains(Shipping Weight:)");
             if(weight==null){
@@ -99,18 +134,25 @@ public class BookScraperImpl implements BookScraper {
             bookDTO.setDescription(desc.text());
 
             Element inStock = doc.selectFirst("div#turboState > script");
-            //Element inStock = doc.selectFirst("div.a-button-stack > div#buyNow");
-            //System.out.println(inStock.html());
-            JsonObject obj = new JsonParser().parse(inStock.html()).getAsJsonObject();
-            //System.out.println(obj);
-            JsonElement inStockNumber = obj.getAsJsonObject("eligibility").get("stockOnHand");
-            bookDTO.setInStockNumber(inStockNumber.getAsInt());
+            if(inStock == null){
+                bookDTO.setInStockNumber(defaultInStock);
+            }else{
+                JsonObject obj = new JsonParser().parse(inStock.html()).getAsJsonObject();
+                JsonElement inStockNumber = obj.getAsJsonObject("eligibility").get("stockOnHand");
+                bookDTO.setInStockNumber(inStockNumber.getAsInt());
+            }
 
 
+            //scrap image, store in aws s3
+            Element imgUrl = doc.selectFirst("div#img-canvas > img");
+            String imgRawUrl = imgUrl.attr("data-a-dynamic-image");
+            //System.out.println(imgRawUrl);
+            bookDTO.setImgUrl(TransformUtil.extractUrl(imgRawUrl));
 
 
         }catch (Exception e){
             e.printStackTrace();
+            return null;
         }
 
         return bookDTO;
@@ -124,5 +166,44 @@ public class BookScraperImpl implements BookScraper {
             result.add(scrapOne(url));
         }
         return result;
+    }
+
+    @Override
+    public List<BookDTO> scrapAll(String url) {
+        List<BookDTO> books = new ArrayList<>();
+        try{
+            Document doc = Jsoup.connect(url)
+                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                    .referrer("http://www.google.com")
+                    .get();
+
+            if(doc == null){
+                throw new ScrapException(ResultEnum.DOC_EMPTY);
+            }
+
+            //System.out.println(doc.body());
+
+            Elements allUrl = doc.select("a.a-link-normal");
+            int count = 0;
+            for(int i = 0;i<allUrl.size() && count < scrapNum;i++){
+                Element eachUrlElem = allUrl.get(i);
+                if(eachUrlElem.attr("href").indexOf("product-reviews")!=-1){
+                    continue;
+                }
+                count++;
+                String eachUrl = "https://www.amazon.com" + eachUrlElem.attr("href");
+                BookDTO bookDTO = scrapOne(eachUrl);
+                if(bookDTO!=null){
+                    bookDTO.setRawUrl(url);
+                    books.add(bookDTO);
+                }
+            }
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return books;
     }
 }

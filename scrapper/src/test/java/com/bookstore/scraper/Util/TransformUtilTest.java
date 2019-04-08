@@ -40,4 +40,13 @@ public class TransformUtilTest {
     String result = TransformUtil.extractDate("SEPTEMBER 2015");
     System.out.println(result);
   }
+
+  @Test
+  public void extractUrl(){
+    String rawUrl =
+        "{\"https://images-na.ssl-images-amazon.com/images/I/51vr9rmhSNL._SX258_BO1,204,203,200_.jpg\":[260,260],\"https://images-na.ssl-images-amazon.com/images/I/51vr9rmhSNL._SY498_BO1,204,203,200_.jpg\":[500,500]}";
+    String url = TransformUtil.extractUrl(rawUrl);
+    System.out.println(url);
+    Assert.assertEquals(url, "https://images-na.ssl-images-amazon.com/images/I/51vr9rmhSNL._SY498_BO1,204,203,200_.jpg");
+  }
 }

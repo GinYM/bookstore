@@ -12,8 +12,14 @@ public class QueueProduceId {
     @Value("${exchange.name.sendId}")
     private String exchange;
 
+    @Value("${exchange.name.sendId.all}")
+    private String exchangeAll;
+
     @Value("${routingkey.sendId}")
     private String routingKey;
+
+    @Value("routingkey.sendId.all")
+    private String routingKeyAll;
 
     private final RabbitTemplate rabbitTemplate;
     @Autowired
@@ -27,5 +33,13 @@ public class QueueProduceId {
         //rabbitTemplate.convertAndSend(exchange, routingKey, url);
         rabbitTemplate.convertAndSend(exchange, routingKey, url);
         log.info("Notification url {} stored in queue successfully", url);
+    }
+
+    public void produceAll(String url) {
+        log.info("Storing all notification url {}...", url);
+        //rabbitTemplate.setExchange(exchange);
+        //rabbitTemplate.convertAndSend(exchange, routingKey, url);
+        rabbitTemplate.convertAndSend(exchangeAll, routingKeyAll, url);
+        log.info("Notification all url {} stored in queue successfully", url);
     }
 }

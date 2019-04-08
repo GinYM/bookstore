@@ -24,6 +24,8 @@ public class BookController {
 
     private static final String urlPre = "http://scraper/scrap/?url=";
 
+    private String prevUrl = "";
+
     @Value("${aws.imgExt}")
     private String imgExt;
 
@@ -47,6 +49,11 @@ public class BookController {
         return "importFromUrl";
     }
 
+    @RequestMapping(value = "/importAllFromUrl")
+    public String importAllFromUrl(Model model){
+        return "importAllFromUrl";
+    }
+
     @PostMapping("/importFromUrl")
     public String importFromUrlHandler(
             @RequestParam("url") String url,
@@ -66,6 +73,25 @@ public class BookController {
         return "importFromUrl";
     }
 
+    @PostMapping("/importAllFromUrl")
+    public String importAllFromUrlHandler(
+            @RequestParam("url") String url,
+            Model model
+    ){
+        List<BookDTO> bookDTOList = queueConsumer.getBookDTOList();
+        model.addAttribute("url", url);
+        if(queueConsumer.getBookDTOList() == null || bookDTOList.size()==0 || !bookDTOList.get(0).getRawUrl().equals(url)){
+            model.addAttribute("getSuccess", false);
+            queueProduceId.produceAll(url);
+            //restTemplate.getForObject(urlPre+url, BookDTO.class);
+        }else{
+            model.addAttribute("bookDTOList", bookDTOList);
+            model.addAttribute("getSuccess", true);
+        }
+
+        return "importFromUrl";
+    }
+
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addBook(Model model) {
         Book book = new Book();
@@ -78,6 +104,7 @@ public class BookController {
             @ModelAttribute("book") Book book, HttpServletRequest request
     ) {
         // todo use more advanced method, such as aws to store the image
+        boolean checkImgUrl = false;
         String name = book.getId() + imgExt;
 
         MultipartFile bookImage = book.getBookImage();
@@ -90,11 +117,12 @@ public class BookController {
 //            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File("src/main/resources/static/image/book/" + name)));
 //            stream.write(bytes);
 //            stream.close();
+            checkImgUrl = true;
         } catch (Exception e) {
             System.out.println("Error!");
             e.printStackTrace();
         }
-        bookService.save(book);
+        bookService.save(book, checkImgUrl);
 
         return "redirect:bookList";
     }
@@ -122,7 +150,9 @@ public class BookController {
 
     @RequestMapping(value = "/updateBook", method = RequestMethod.POST)
     public String updateBookPost(@ModelAttribute("book") Book book, HttpServletRequest request) {
-        bookService.save(book);
+        // todo change logic
+        boolean checkImgUrl = false;
+
         MultipartFile bookImage = book.getBookImage();
         if (!bookImage.isEmpty()) {
             try {
@@ -138,10 +168,12 @@ public class BookController {
 //                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File("src/main/resources/static/image/book/" + name)));
 //                stream.write(bytes);
 //                stream.close();
+                checkImgUrl = true;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        bookService.save(book, checkImgUrl);
         return "redirect:/book/bookInfo?id=" + book.getId();
     }
 

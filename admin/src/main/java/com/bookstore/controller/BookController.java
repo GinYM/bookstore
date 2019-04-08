@@ -89,7 +89,7 @@ public class BookController {
             model.addAttribute("getSuccess", true);
         }
 
-        return "importFromUrl";
+        return "importAllFromUrl";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)

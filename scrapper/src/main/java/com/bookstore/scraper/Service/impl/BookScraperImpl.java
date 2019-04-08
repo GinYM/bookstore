@@ -1,6 +1,7 @@
 package com.bookstore.scraper.Service.impl;
 
 import com.bookstore.scraper.DTO.BookDTO;
+import com.bookstore.scraper.Enum.FormatEnum;
 import com.bookstore.scraper.Enum.ResultEnum;
 import com.bookstore.scraper.Exception.ScrapException;
 import com.bookstore.scraper.Service.BookScraper;
@@ -49,7 +50,8 @@ public class BookScraperImpl implements BookScraper {
                 for(int i = 0;i<checkHardcover.size();i++){
                     Element getHardcover = checkHardcover.get(i);
                     //System.out.println(getHardcover.text());
-                    if(getHardcover.text().indexOf("Hardcover")!=-1){
+                    if(getHardcover.text().indexOf("Hardcover")!=-1
+                       && getHardcover.attr("href").indexOf("javascript:void(0)")==-1){
 
                         String hcvUrl = "https://www.amazon.com"+getHardcover.attr("href");
                         //System.out.println("new url: "+hcvUrl);
@@ -79,7 +81,13 @@ public class BookScraperImpl implements BookScraper {
                     bookDTO.setOurPrice(TransformUtil.extractDouble(
                             TransformUtil.removeStr("Special Price:", offerPrice.text())));
                 }else{
-                    throw new ScrapException(ResultEnum.Empty);
+                    offerPrice = doc.selectFirst("span.a-color-secondary.header-price");
+                    if(offerPrice != null){
+                        bookDTO.setOurPrice(TransformUtil.extractDouble(offerPrice.text()));
+                    }else{
+                        throw new ScrapException(ResultEnum.Empty);
+                    }
+
                 }
 
             }else{
@@ -100,6 +108,9 @@ public class BookScraperImpl implements BookScraper {
             Element publisher = doc.select("li:contains(Publisher:)").first();
             bookDTO.setPublisher(TransformUtil.removeStr("Publisher:", publisher.text()).replaceAll("\\(.*\\)",""));
 
+            String publicationDate = TransformUtil.extractDateFromPublisher(TransformUtil.removeStr("Publisher:", publisher.text()));
+            bookDTO.setPublicationDate(publicationDate);
+
             Element isbn = doc.selectFirst("li:contains(ISBN-10:)");
             bookDTO.setIsbn(TransformUtil.removeStr("ISBN-10:", isbn.text()));
 
@@ -108,16 +119,34 @@ public class BookScraperImpl implements BookScraper {
 
             Elements bookHeaderInfo = doc.select("h1#title > span");
 
+            // paperback set format and paege number
+            if(doc.selectFirst("li:contains("+FormatEnum.PAPERBACK.getMsg()+":)")!=null){
+                bookDTO.setFormat(FormatEnum.PAPERBACK.getMsg().toLowerCase());
+                Element pages = doc.selectFirst("li:contains("+FormatEnum.PAPERBACK.getMsg()+":)");
+                bookDTO.setNumberOfPages(Integer.parseInt(TransformUtil.removeStr(FormatEnum.PAPERBACK.getMsg()+":", pages.text()).split(" ")[0]));
+            }else if(doc.selectFirst("li:contains("+FormatEnum.HARDCOVER.getMsg()+":)")!=null){
+                bookDTO.setFormat(FormatEnum.HARDCOVER.getMsg().toLowerCase());
+                Element pages = doc.selectFirst("li:contains("+FormatEnum.HARDCOVER.getMsg()+":)");
+                bookDTO.setNumberOfPages(Integer.parseInt(TransformUtil.removeStr(FormatEnum.HARDCOVER.getMsg()+":", pages.text()).split(" ")[0]));
+
+            }else{
+                // kindle
+                bookDTO.setFormat(FormatEnum.KINDLE.getMsg().toLowerCase());
+                Element pages = doc.selectFirst("li:contains(Print Length:)");
+                bookDTO.setNumberOfPages(Integer.parseInt(TransformUtil.removeStr("Print Length:", pages.text()).split(" ")[0]));
+
+            }
+
             Element bookFormat = bookHeaderInfo.get(1);
             bookDTO.setFormat(bookFormat.text().toLowerCase());
 
-            Element publishDate = bookHeaderInfo.get(2);
-            String extractDate = publishDate.text().substring(2);
-            bookDTO.setPublicationDate(TransformUtil.extractDate(extractDate));
+//            Element publishDate = bookHeaderInfo.get(2);
+//            String extractDate = publishDate.text().substring(2);
+//            bookDTO.setPublicationDate(TransformUtil.extractDate(extractDate));
 
             //System.out.println(bookFormat.text());
-            Element pages = doc.selectFirst("li:contains("+bookFormat.text()+":)");
-            bookDTO.setNumberOfPages(Integer.parseInt(TransformUtil.removeStr(bookFormat.text()+":", pages.text()).split(" ")[0]));
+//            Element pages = doc.selectFirst("li:contains("+bookFormat.text()+":)");
+//            bookDTO.setNumberOfPages(Integer.parseInt(TransformUtil.removeStr(bookFormat.text()+":", pages.text()).split(" ")[0]));
 
             Element weight = doc.selectFirst("li:contains(Shipping Weight:)");
             if(weight==null){
@@ -145,6 +174,9 @@ public class BookScraperImpl implements BookScraper {
 
             //scrap image, store in aws s3
             Element imgUrl = doc.selectFirst("div#img-canvas > img");
+            if(imgUrl == null){
+                imgUrl = doc.selectFirst("div#mainImageContainer > img");
+            }
             String imgRawUrl = imgUrl.attr("data-a-dynamic-image");
             //System.out.println(imgRawUrl);
             bookDTO.setImgUrl(TransformUtil.extractUrl(imgRawUrl));

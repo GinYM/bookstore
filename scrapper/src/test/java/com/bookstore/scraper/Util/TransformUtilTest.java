@@ -49,4 +49,10 @@ public class TransformUtilTest {
     System.out.println(url);
     Assert.assertEquals(url, "https://images-na.ssl-images-amazon.com/images/I/51vr9rmhSNL._SY498_BO1,204,203,200_.jpg");
   }
+
+  @Test
+  public void extractFromPublisher() throws Exception{
+    String publisher = "Liveright; 1 edition (March 20, 2018)";
+    System.out.println(TransformUtil.extractDateFromPublisher(publisher));
+  }
 }

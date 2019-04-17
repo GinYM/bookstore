@@ -40,6 +40,7 @@
             <li class="list-group-item"><strong>List Price:</strong> <span th:text="${bookDTO.listPrice}"></span></li>
             <li class="list-group-item"><strong>Our Price:</strong> <span th:text="${bookDTO.ourPrice}"></span></li>
             <li class="list-group-item"><strong>Description:</strong> <span th:utext="${bookDTO.description}"></span></li>
+            <li class="list-group-item"><img th:src="${bookDTO.imgUrl}" class="rounded" alt="..."></li>
         </ul>
     </div>
 

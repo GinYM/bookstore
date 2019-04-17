@@ -1,0 +1,45 @@
+version: '3'
+services:
+     nginx-lb:
+         build: ./nginx-load-balancer
+         #image: nginx-lb
+         ports:
+             - "80:80"
+         links:
+             - redis
+             - rabbitmq
+             - eureka-server
+             - scrapper 
+             - bookstore
+             - adminportal
+         depends_on:
+             - redis
+             - rabbitmq
+             - eureka-server
+             - scrapper
+             - bookstore
+             - adminportal
+     redis:
+         image: redis:latest
+         ports:
+             - "6379" 
+     rabbitmq:
+         image: rabbitmq:latest
+         ports:
+             - "5672" 
+     eureka-server:
+         image: 030355243416.dkr.ecr.us-east-1.amazonaws.com/eurekaserver:latest 
+         ports:
+             - "8761"
+     scrapper:
+         image: 030355243416.dkr.ecr.us-east-1.amazonaws.com/bookstore/scrapper
+         ports:
+             - "8088"
+     bookstore:
+         image: 030355243416.dkr.ecr.us-east-1.amazonaws.com/bookstore/bookstore
+         ports:
+             - "8080"
+     adminportal:
+         image: 030355243416.dkr.ecr.us-east-1.amazonaws.com/bookstore/adminportal
+         ports:
+             - "8081"

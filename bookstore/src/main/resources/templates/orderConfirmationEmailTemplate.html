@@ -34,7 +34,7 @@
 </head>
 <body>
 
-<p>Dear <span th:text="${user.firstName}"></span></p>
+<p>Dear <span th:text="${user.firstName}?${user.firstName}:${user.username}"></span></p>
 <br>
 <p>Thank you for shopping from our book store. We hope you had a
 good time with our service!</p>

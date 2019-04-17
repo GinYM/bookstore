@@ -3,7 +3,7 @@ package com.bookstore.scraper.Service.impl;
 import com.bookstore.scraper.DTO.BookDTO;
 import com.bookstore.scraper.Service.BookScraper;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.netflix.discovery.converters.Auto;
+//import com.netflix.discovery.converters.Auto;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,9 +93,14 @@ public class BookScraperImplTest {
   private String allUrl1 = "https://www.amazon.com/gp/new-releases/books/283155/ref=s9_acsd_ri_bw_clnk/ref=s9_acsd_ri_bw_c_x_ccl_w?pf_rd_m=ATVPDKIKX0DER&pf_rd_s=merchandised-search-11&pf_rd_r=26GMK0YG5W2TGKSE0HQC&pf_rd_t=101&pf_rd_p=c1698c9d-3c53-45d2-b536-8b2e50b21827&pf_rd_i=283155";
 
   private String allUrl2 = "https://www.amazon.com/b/ref=s9_acss_bw_cg_BHPJAN_1a1_w?node=6960520011&pf_rd_m=ATVPDKIKX0DER&pf_rd_s=merchandised-search-2&pf_rd_r=GA0AR7H02TF3NQCH7H8Q&pf_rd_t=101&pf_rd_p=b7160c47-1f75-45c8-bcb5-7749ef79d02e&pf_rd_i=283155";
+
+  private String allUrl3 = "https://www.amazon.com/gp/bestsellers/books/283155/ref=s9_acsd_ri_bw_clnk/ref=s9_acsd_ri_bw_c_x_ccl_w?pf_rd_m=ATVPDKIKX0DER&pf_rd_s=merchandised-search-10&pf_rd_r=RFWKK2N2JVZFA6B2SFET&pf_rd_t=101&pf_rd_p=b34f3048-7fa4-49b0-99af-8102f019a6c3&pf_rd_i=283155";
+
+  private String allUrl4 = "https://www.amazon.com/Best-Sellers-Books/zgbs/books/283155/ref=zg_bs_pg_2?_encoding=UTF8&pg=2";
+
   @Test
   public void scrapAll(){
-    List<BookDTO> bookDTOS = bookScraper.scrapAll(allUrl2);
+    List<BookDTO> bookDTOS = bookScraper.scrapAll(allUrl4);
     for(BookDTO bookDTO : bookDTOS){
       System.out.println(bookDTO);
     }

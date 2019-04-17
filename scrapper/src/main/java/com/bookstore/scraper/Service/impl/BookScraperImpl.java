@@ -17,8 +17,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -182,7 +181,10 @@ public class BookScraperImpl implements BookScraper {
             bookDTO.setImgUrl(TransformUtil.extractUrl(imgRawUrl));
 
 
-        }catch (Exception e){
+        }catch (ScrapException e){
+            log.info("[error] parse result error: {}", e.getMsg());
+            return null;
+        } catch (Exception e){
             e.printStackTrace();
             return null;
         }
@@ -217,17 +219,19 @@ public class BookScraperImpl implements BookScraper {
 
             Elements allUrl = doc.select("a.a-link-normal");
             int count = 0;
+            Set<String> checkUrl = new HashSet<>();
             for(int i = 0;i<allUrl.size() && count < scrapNum;i++){
                 Element eachUrlElem = allUrl.get(i);
-                if(eachUrlElem.attr("href").indexOf("product-reviews")!=-1){
+                if(eachUrlElem.attr("href").indexOf("product-reviews")!=-1 || checkUrl.contains(eachUrlElem.attr("href"))){
                     continue;
                 }
-                count++;
+                checkUrl.add(eachUrlElem.attr("href"));
                 String eachUrl = "https://www.amazon.com" + eachUrlElem.attr("href");
                 BookDTO bookDTO = scrapOne(eachUrl);
                 if(bookDTO!=null){
                     bookDTO.setRawUrl(url);
                     books.add(bookDTO);
+                    count++;
                 }
             }
 

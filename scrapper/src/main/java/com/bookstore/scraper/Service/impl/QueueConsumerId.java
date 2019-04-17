@@ -9,6 +9,7 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
 import javax.jms.Message;
+import javax.jms.TextMessage;
 import java.util.List;
 
 @Component
@@ -24,11 +25,11 @@ public class QueueConsumerId {
     private String url;
     @JmsListener(destination = "${queue.name.sendId}")
     public void receiveMessage(Message url) {
+        log.info("receive url: {}", url);
         try{
-            this.url = url.getBody(String.class);;
+            this.url = ((TextMessage) url).getText();
             //System.out.println("Received!");
             // scrap book and send back
-            log.info("receive url: {}", url);
             BookDTO bookDTO = bookScraper.scrapOne(this.url);
             if(bookDTO != null){
                 queueProducer.produce(bookDTO);
@@ -44,11 +45,11 @@ public class QueueConsumerId {
 
     @JmsListener(destination = "${queue.name.sendId.all}")
     public void receiveMessageAll(Message url) {
+        log.info("[info] receive All url: {}", url);
         try{
-            this.url = url.getBody(String.class);
+            this.url =  ((TextMessage) url).getText();
             //System.out.println("Received!");
             // scrap book and send back
-            log.info("[info] receive All url: {}", url);
             List<BookDTO> bookDTOList = bookScraper.scrapAll(this.url);
             if(bookDTOList != null && bookDTOList.size()>0){
                 queueProducer.produceAll(bookDTOList);

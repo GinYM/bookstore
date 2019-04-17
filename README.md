@@ -1,7 +1,7 @@
 # Bookstore
 > A Bookstore website built in SpringBoot
 
-A [website](ec2-54-157-39-180.compute-1.amazonaws.com) deployed in AWS.
+A [website](http://ec2-54-157-39-180.compute-1.amazonaws.com) deployed in AWS.
 
 ## Installation
 

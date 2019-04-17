@@ -48,8 +48,7 @@
                             <hr>
                             <div class="col-sm-2">
                                 <a th:href="@{/bookDetail(id=${cartItem.book.id})}">
-                                    <img class="img-fluid shelf-book" th:src="#{adminPath}+@{/image/book/}
-                                            +${cartItem.book.id}+'.png'" style="width: 70px;">
+                                    <img class="img-fluid shelf-book" th:src="${cartItem.book.imgUrl}" style="width: 70px;">
                                 </a>
                             </div>
                             <div class="col-sm-6">

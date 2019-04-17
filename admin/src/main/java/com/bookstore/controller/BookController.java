@@ -33,9 +33,6 @@ public class BookController {
     private AmazonS3ClientService amazonS3ClientService;
 
     @Autowired
-    private RestTemplate restTemplate;
-
-    @Autowired
     private BookService bookService;
 
     @Autowired

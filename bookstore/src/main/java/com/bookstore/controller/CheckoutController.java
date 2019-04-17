@@ -190,7 +190,7 @@ public class CheckoutController {
             @ModelAttribute("billingAddress") BillingAddress billingAddress,
             @ModelAttribute("payment") Payment payment,
             @ModelAttribute("billingSameAsShipping") String billingSameAsShipping,
-            @ModelAttribute("shipppingMethod") String shippingMethod,
+            @ModelAttribute("shippingMethod") String shippingMethod,
             Principal principal, Model model
     ){
         ShoppingCart shoppingCart = userService.findByUsername(principal.getName()).getShoppingCart();

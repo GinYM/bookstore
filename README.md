@@ -22,4 +22,3 @@ docker-compose up -d
 cd ../app-admin
 docker-compose up -d
 ```
->>>>>>> 1a172f091c7bd3a5a31320e76f4ad6dc8a237f04

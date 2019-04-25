@@ -1,7 +1,8 @@
 # Bookstore
 > A Bookstore website built in SpringBoot
 
-A [website](http://ec2-54-157-39-180.compute-1.amazonaws.com) deployed in AWS.
+A [website](http://ec2-18-212-36-55.compute-1.amazonaws.com) deployed in AWS.
+Adminportal can be access in this [url](http://ec2-18-212-36-55.compute-1.amazonaws.com/admin)
 
 ## Installation
 
